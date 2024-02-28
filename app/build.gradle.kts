@@ -1,11 +1,27 @@
+import java.util.*
+
 plugins {
    id("com.android.application")
    id("org.jetbrains.kotlin.android")
 }
 
+fun Project.readProperties(file: File): Properties {
+   val properties = Properties()
+   if (file.exists()) {
+      file.inputStream().use { fis ->
+         properties.load(fis)
+      }
+   }
+   return properties
+}
+
 android {
    namespace = "com.mapbox.memleak"
    compileSdk = 34
+
+   buildFeatures {
+      buildConfig = true
+   }
 
    defaultConfig {
       applicationId = "com.mapbox.memleak"
@@ -18,6 +34,9 @@ android {
       vectorDrawables {
          useSupportLibrary = true
       }
+
+      val mapboxAccessToken = readProperties(project.rootProject.file("local.properties"))["accessToken"] ?: "default"
+      buildConfigField("String", "MAPBOX_ACCESS_TOKEN", "\"$mapboxAccessToken\"")
    }
 
    buildTypes {
