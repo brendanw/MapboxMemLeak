@@ -67,11 +67,11 @@ android {
 
 dependencies {
 
-   implementation("com.mapbox.extension:maps-compose:11.2.0-rc.1")
+   implementation("com.mapbox.extension:maps-compose:11.3.0-beta.1")
 
    // Pick your versions of Android Mapbox Map SDK
    // Note that Compose extension is compatible with Maps SDK v11.0+.
-   implementation("com.mapbox.maps:android:11.2.0-rc.1")
+   implementation("com.mapbox.maps:android:11.3.0-beta.1")
    implementation("androidx.core:core-ktx:1.12.0")
    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
    implementation("androidx.activity:activity-compose:1.8.2")
