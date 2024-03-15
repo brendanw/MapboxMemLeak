@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.mapbox.maps.extension.compose.MapboxMap
 
 @Composable
@@ -22,9 +23,15 @@ fun MapScreen(navigate: () -> Unit) {
       modifier = Modifier.padding(start = 20.dp, end = 20.dp)
    ) {
 
-      MapboxMap(
-         modifier = Modifier.fillMaxWidth().height(200.dp)
-      ) {  }
+      AndroidView(
+         modifier = Modifier.fillMaxWidth().height(200.dp),
+         factory = { context ->
+            MyMapView(context)
+         },
+         update = {
+
+         }
+      )
 
       Spacer(Modifier.height(20.dp))
 
