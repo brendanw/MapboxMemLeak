@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -45,28 +46,25 @@ import com.mapbox.maps.plugin.locationcomponent.location
 import com.mapbox.maps.viewannotation.annotationAnchor
 import com.mapbox.maps.viewannotation.geometry
 import com.mapbox.maps.viewannotation.viewAnnotationOptions
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
 
 @SuppressLint("IncorrectNumberOfArgumentsInExpression")
 @OptIn(MapboxExperimental::class)
 @Composable
-fun MapScreen(navigate: () -> Unit) {
-   Column(
-      horizontalAlignment = Alignment.CenterHorizontally,
-      verticalArrangement = Arrangement.Center,
-      modifier = Modifier.padding(start = 20.dp, end = 20.dp)
-   ) {
+fun MapScreen() {
+   Box(Modifier.fillMaxSize()) {
       val cameraState = remember {
          MapboxCameraState(
-            center = LatLng( 37.746011, -119.533632),
-            zoom = 15.5,
+            center = LatLng(37.746011, -119.533632),
+            zoom = 5.0,
             pitch = 0.0,
             bearing = 0.0
          )
       }
 
-      Box {
       MapboxMap(
-         modifier = Modifier.fillMaxWidth().height(200.dp),
+         modifier = Modifier.fillMaxSize(),
          scaleBar = {
             ScaleBar(
                modifier = Modifier.align(Alignment.BottomStart)
@@ -101,13 +99,24 @@ fun MapScreen(navigate: () -> Unit) {
       ) {
          val isMarkerVisible = remember { mutableStateOf(false) }
 
+         val exits: List<MapExit> = remember { json.decodeFromString(exitJSON) }
+         val options = remember {
+            exits.map {
+               PointAnnotationOptions()
+                  .withPoint(Point.fromLngLat(it.longitude, it.latitude))
+                  .withIconImage("blue-pin")
+            }
+         }
+
          // add pointannotation
-         val option = remember { PointAnnotationOptions()
-            .withPoint(Point.fromLngLat(-119.533632, 37.746011))
-            .withIconImage("blue-pin") }
+         val option = remember {
+            PointAnnotationOptions()
+               .withPoint(Point.fromLngLat(-119.533632, 37.746011))
+               .withIconImage("blue-pin")
+         }
 
          PointAnnotationGroup(
-            listOf(option),
+            options,
             onClick = {
                isMarkerVisible.value = true
                true
@@ -149,17 +158,6 @@ fun MapScreen(navigate: () -> Unit) {
                }.toJson()
             )
          }
-      }
-         }
-
-      Spacer(Modifier.height(20.dp))
-
-      Button(
-         onClick = {
-            navigate()
-         }
-      ) {
-         Text("Navigate away from map")
       }
    }
 }
@@ -218,8 +216,10 @@ data class MapboxCameraState(
 )
 
 
-data class LatLng(var latitude: Double = 0.toDouble(),
-                  var longitude: Double = 0.toDouble()) {
+data class LatLng(
+   var latitude: Double = 0.toDouble(),
+   var longitude: Double = 0.toDouble()
+) {
    val isZero: Boolean
       get() = latitude == 0.0 && longitude == 0.0
 
@@ -230,3 +230,13 @@ data class LatLng(var latitude: Double = 0.toDouble(),
             '}'.toString()
    }
 }
+
+@Serializable
+data class MapExit(
+   val _id: String,
+   val name: String,
+   val latitude: Double,
+   val longitude: Double,
+   val continent: String,
+   val isExitVerified: Boolean
+)

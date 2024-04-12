@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mapbox.common.MapboxOptions
 import com.mapbox.memleak.ui.theme.MapboxMemLeakTheme
+import kotlinx.serialization.json.Json
 
 class MainActivity : ComponentActivity() {
    override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,20 +31,7 @@ class MainActivity : ComponentActivity() {
 
       setContent {
          MapboxMemLeakTheme {
-            // A surface container using the 'background' color from the theme
-            Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-               val activePage = remember { mutableStateOf(Page.Map) }
-
-               when (activePage.value) {
-                  Page.Map -> {
-                     MapScreen { activePage.value = Page.Exit }
-                  }
-
-                  Page.Exit -> {
-                     ExitScreen { activePage.value = Page.Map }
-                  }
-               }
-            }
+            MapScreen()
          }
       }
    }
@@ -66,3 +54,8 @@ fun GreetingPreview() {
 }
 
 enum class Page { Map, Exit }
+
+val json = Json {
+   ignoreUnknownKeys = true
+   isLenient = true
+}
