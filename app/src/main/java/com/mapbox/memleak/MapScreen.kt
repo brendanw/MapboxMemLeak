@@ -8,15 +8,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -30,15 +27,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.mapbox.geojson.Point
-import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.ImageHolder
-import com.mapbox.maps.MapInitOptions
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.ViewAnnotationAnchor
 import com.mapbox.maps.extension.compose.MapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
+import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
 import com.mapbox.maps.extension.compose.annotation.ViewAnnotation
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotationGroup
+import com.mapbox.maps.extension.compose.style.MapStyle
 import com.mapbox.maps.extension.style.expressions.generated.Expression
 import com.mapbox.maps.plugin.LocationPuck2D
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
@@ -47,7 +44,6 @@ import com.mapbox.maps.viewannotation.annotationAnchor
 import com.mapbox.maps.viewannotation.geometry
 import com.mapbox.maps.viewannotation.viewAnnotationOptions
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
 
 @SuppressLint("IncorrectNumberOfArgumentsInExpression")
 @OptIn(MapboxExperimental::class)
@@ -79,22 +75,21 @@ fun MapScreen() {
                   .align(Alignment.TopStart)
             )
          },
-         mapInitOptionsFactory = { context ->
-            MapInitOptions(
-               context = context,
-               styleUri = "mapbox://styles/basebeta/clm3fw4kx00tk01qyco2x8f3p",
-               cameraOptions = CameraOptions.Builder()
-                  .center(
-                     Point.fromLngLat(
-                        cameraState.center.longitude,
-                        cameraState.center.latitude
-                     )
+         style = {
+            MapStyle(style = "mapbox://styles/basebeta/clm3fw4kx00tk01qyco2x8f3p")
+         },
+         mapViewportState = MapViewportState().apply {
+            setCameraOptions {
+               center(
+                  Point.fromLngLat(
+                     cameraState.center.longitude,
+                     cameraState.center.latitude
                   )
-                  .zoom(cameraState.zoom)
-                  .pitch(cameraState.pitch)
-                  .bearing(cameraState.bearing)
-                  .build(),
-            )
+               )
+               zoom(cameraState.zoom)
+               pitch(cameraState.pitch)
+               bearing(cameraState.bearing)
+            }
          }
       ) {
          val isMarkerVisible = remember { mutableStateOf(false) }
