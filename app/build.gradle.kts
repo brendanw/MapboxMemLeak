@@ -3,6 +3,7 @@ import java.util.*
 plugins {
    id("com.android.application")
    id("org.jetbrains.kotlin.android")
+   kotlin("plugin.serialization") version "1.9.0"
 }
 
 fun Project.readProperties(file: File): Properties {
@@ -67,11 +68,11 @@ android {
 
 dependencies {
 
-   implementation("com.mapbox.extension:maps-compose:11.3.0-rc.1")
+   implementation("com.mapbox.extension:maps-compose:11.3.1")
 
    // Pick your versions of Android Mapbox Map SDK
    // Note that Compose extension is compatible with Maps SDK v11.0+.
-   implementation("com.mapbox.maps:android:11.3.0-rc.1")
+   implementation("com.mapbox.maps:android:11.3.1")
    implementation("androidx.core:core-ktx:1.12.0")
    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
    implementation("androidx.activity:activity-compose:1.8.2")
@@ -80,6 +81,7 @@ dependencies {
    implementation("androidx.compose.ui:ui-graphics")
    implementation("androidx.compose.ui:ui-tooling-preview")
    implementation("androidx.compose.material3:material3")
+   implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
    testImplementation("junit:junit:4.13.2")
    androidTestImplementation("androidx.test.ext:junit:1.1.5")
    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
